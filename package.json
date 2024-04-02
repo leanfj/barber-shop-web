@@ -15,7 +15,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "dotenvx run --env-file=.env.development --verbose -- react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -57,9 +57,9 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.93",
-    "@types/react": "^18.2.73",
+    "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
-    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
     "devextreme-cli": "1.6.7",
     "devextreme-themebuilder": "23.2.4",
     "eslint": "^8.57.0",
