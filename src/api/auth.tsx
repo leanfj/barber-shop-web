@@ -1,86 +1,105 @@
-import defaultUser from '../utils/default-user';
+import defaultUser from "../utils/default-user";
 
-export async function signIn(email: string, password: string) {
+export async function signIn(
+  email: string,
+  password: string,
+): Promise<{
+  isOk: boolean;
+  data?: {
+    email: string;
+    avatarUrl: string;
+  };
+  message?: string;
+}> {
   try {
     // Send request
     console.log(email, password);
 
     return {
       isOk: true,
-      data: defaultUser
+      data: defaultUser,
     };
-  }
-  catch {
+  } catch {
     return {
       isOk: false,
-      message: "Authentication failed"
+      message: "Authentication failed",
     };
   }
 }
 
-export async function getUser() {
+export async function getUser(): Promise<{
+  isOk: boolean;
+  data?: {
+    email: string;
+    avatarUrl: string;
+  };
+}> {
   try {
     // Send request
 
     return {
       isOk: true,
-      data: defaultUser
+      data: defaultUser,
     };
-  }
-  catch {
+  } catch {
     return {
-      isOk: false
+      isOk: false,
     };
   }
 }
 
-export async function createAccount(email: string, password: string) {
+export async function createAccount(
+  email: string,
+  password: string,
+): Promise<{ isOk: boolean; message?: string }> {
   try {
     // Send request
     console.log(email, password);
 
     return {
-      isOk: true
+      isOk: true,
     };
-  }
-  catch {
+  } catch {
     return {
       isOk: false,
-      message: "Failed to create account"
+      message: "Failed to create account",
     };
   }
 }
 
-export async function changePassword(email: string, recoveryCode?: string) {
+export async function changePassword(
+  email: string,
+  recoveryCode?: string,
+): Promise<{ isOk: boolean; message?: string }> {
   try {
     // Send request
     console.log(email, recoveryCode);
 
     return {
-      isOk: true
+      isOk: true,
     };
-  }
-  catch {
+  } catch {
     return {
       isOk: false,
-      message: "Failed to change password"
-    }
+      message: "Failed to change password",
+    };
   }
 }
 
-export async function resetPassword(email: string) {
+export async function resetPassword(
+  email: string,
+): Promise<{ isOk: boolean; message?: string }> {
   try {
     // Send request
     console.log(email);
 
     return {
-      isOk: true
+      isOk: true,
     };
-  }
-  catch {
+  } catch {
     return {
       isOk: false,
-      message: "Failed to reset password"
+      message: "Failed to reset password",
     };
   }
 }
