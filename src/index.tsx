@@ -5,6 +5,11 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import config from "devextreme/core/config";
+import { devextremeLicense } from "./devextreme-license";
+console.log("devextremeLicense", process.env);
+config({ licenseKey: devextremeLicense });
+
 const root = ReactDOM.createRoot(
   // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
   document.getElementById("root") as HTMLElement,
