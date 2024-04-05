@@ -20,8 +20,18 @@ export interface UserPanelProps {
 }
 
 export interface User {
-  email: string;
-  avatarUrl: string;
+  _id: {
+    value: string;
+  };
+  props: {
+    nome: string;
+    tenantId: string;
+    email: string;
+    password: string;
+    isActive: boolean;
+    dataAtualizacao: string;
+    dataCadastro: string;
+  };
 }
 
 export interface AuthContextType {

@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 
 import config from "devextreme/core/config";
 import { devextremeLicense } from "./devextreme-license";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 console.log("devextremeLicense", process.env);
 config({ licenseKey: devextremeLicense });
 
@@ -16,6 +17,7 @@ const root = ReactDOM.createRoot(
 );
 root?.render(
   <React.StrictMode>
+    <SpeedInsights />
     <App />
   </React.StrictMode>,
 );

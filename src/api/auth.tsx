@@ -1,4 +1,6 @@
-import defaultUser from "../utils/default-user";
+// import defaultUser from "../utils/default-user";
+// import { AxiosError } from "axios";
+import { AxiosClient } from "./axiosClient";
 
 export async function signIn(
   email: string,
@@ -6,20 +8,52 @@ export async function signIn(
 ): Promise<{
   isOk: boolean;
   data?: {
-    email: string;
-    avatarUrl: string;
+    token: {
+      _id: {
+        value: string;
+      };
+      props: {
+        dataExpiracao: {
+          props: {
+            value: string;
+          };
+        };
+        usuarioId: string;
+        tenantId: string;
+        dataCadastro: string;
+        dataAtualizacao: string;
+        token: {
+          props: {
+            value: string;
+          };
+        };
+      };
+    };
+    refreshToken: string;
   };
   message?: string;
 }> {
   try {
-    // Send request
-    console.log(email, password);
+    const data = await AxiosClient.getInstance().post("/authentication/login", {
+      email,
+      password,
+    });
+
+    localStorage.setItem(
+      "token",
+      JSON.stringify(data.data.token.props.token.props.value),
+    );
+    localStorage.setItem(
+      "usuarioId",
+      JSON.stringify(data.data.token.props.usuarioId),
+    );
 
     return {
       isOk: true,
-      data: defaultUser,
+      data: data.data,
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       isOk: false,
       message: "Authentication failed",
@@ -30,18 +64,38 @@ export async function signIn(
 export async function getUser(): Promise<{
   isOk: boolean;
   data?: {
-    email: string;
-    avatarUrl: string;
+    _id: {
+      value: string;
+    };
+    props: {
+      nome: string;
+      tenantId: string;
+      email: string;
+      password: string;
+      isActive: boolean;
+      dataAtualizacao: string;
+      dataCadastro: string;
+    };
   };
 }> {
   try {
-    // Send request
+    const token = JSON.parse(localStorage.getItem("token") ?? "");
+    const usuarioId = JSON.parse(localStorage.getItem("usuarioId") ?? "");
+    const user = await AxiosClient.getInstance().get(
+      `/usuarios/id/${usuarioId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
 
     return {
       isOk: true,
-      data: defaultUser,
+      data: user.data,
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       isOk: false,
     };

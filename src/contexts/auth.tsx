@@ -23,14 +23,37 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
     })();
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    const result = await sendSignInRequest(email, password);
-    if (result.isOk && result.data) {
-      setUser(result.data);
-    }
+  const signIn = useCallback(
+    async (
+      email: string,
+      password: string,
+    ): Promise<{
+      isOk: boolean;
+      data?: User | undefined;
+      message?: string | undefined;
+    }> => {
+      const result = await sendSignInRequest(email, password);
+      if (result.isOk && result.data?.token.props.usuarioId) {
+        const user = await getUser();
 
-    return result;
-  }, []);
+        if (!user.isOk) {
+          return {
+            isOk: false,
+            message: "Failed to get user data",
+          };
+        }
+
+        setUser(user.data);
+      }
+
+      return {
+        isOk: true,
+        data: user,
+        message: "",
+      };
+    },
+    [],
+  );
 
   const signOut = useCallback(() => {
     setUser(undefined);

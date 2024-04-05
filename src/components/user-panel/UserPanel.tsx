@@ -34,13 +34,13 @@ export default function UserPanel({ menuMode }: UserPanelProps): JSX.Element {
         <div className={"image-container"}>
           <div
             style={{
-              background: `url(${user?.avatarUrl}) no-repeat #fff`,
+              background: `url(${user?.props.nome}) no-repeat #fff`,
               backgroundSize: "cover",
             }}
             className={"user-image"}
           />
         </div>
-        <div className={"user-name"}>{user?.email}</div>
+        <div className={"user-name"}>{user?.props.email}</div>
       </div>
 
       {menuMode === "context" && (
