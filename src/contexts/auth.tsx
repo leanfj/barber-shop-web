@@ -33,9 +33,9 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
       message?: string | undefined;
     }> => {
       const result = await sendSignInRequest(email, password);
-      if (result.isOk && result.data?.token.props.usuarioId) {
-        const user = await getUser();
+      const user = await getUser();
 
+      if (result.isOk && result.data?.token.props.usuarioId) {
         if (!user.isOk) {
           return {
             isOk: false,
@@ -44,11 +44,16 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
         }
 
         setUser(user.data);
+      } else {
+        return {
+          isOk: false,
+          message: result.message,
+        };
       }
 
       return {
         isOk: true,
-        data: user,
+        data: user as any,
         message: "",
       };
     },
