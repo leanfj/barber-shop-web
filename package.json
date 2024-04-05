@@ -2,7 +2,6 @@
   "name": "barber-shop-web",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3333",
   "dependencies": {
     "@vercel/speed-insights": "^1.0.10",
     "axios": "^1.6.8",

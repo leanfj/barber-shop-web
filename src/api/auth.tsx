@@ -34,15 +34,20 @@ export async function signIn(
   message?: string;
 }> {
   try {
-    const data = await AxiosClient.getInstance().post("/authentication/login", {
-      email,
-      password,
-    });
-
-    localStorage.setItem(
-      "token",
-      JSON.stringify(data.data.token.props.token.props.value),
+    const data = await AxiosClient.getInstance().post(
+      "/authentication/login",
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      },
     );
+
     localStorage.setItem(
       "usuarioId",
       JSON.stringify(data.data.token.props.usuarioId),
@@ -79,14 +84,11 @@ export async function getUser(): Promise<{
   };
 }> {
   try {
-    const token = JSON.parse(localStorage.getItem("token") ?? "");
     const usuarioId = JSON.parse(localStorage.getItem("usuarioId") ?? "");
     const user = await AxiosClient.getInstance().get(
       `/usuarios/id/${usuarioId}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       },
     );
 
