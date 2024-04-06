@@ -5,7 +5,11 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { getUser, signIn as sendSignInRequest } from "../api/auth";
+import {
+  getUser,
+  signIn as sendSignInRequest,
+  activateAccount,
+} from "../api/auth";
 import type { User, AuthContextType } from "../types";
 
 function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
@@ -64,9 +68,28 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
     setUser(undefined);
   }, []);
 
+  const activation = useCallback(
+    async (usuarioId: string, token: string) => {
+      const result = await activateAccount(usuarioId, token);
+
+      if (result.isOk && result.data?.token.props.usuarioId) {
+        return {
+          isOk: true,
+          message: result.message,
+        };
+      }
+      return {
+        isOk: false,
+        message: "Failed to get user data",
+      };
+    },
+
+    [],
+  );
+
   return (
     <AuthContext.Provider
-      value={{ user, signIn, signOut, loading }}
+      value={{ user, signIn, signOut, loading, activation }}
       {...props}
     />
   );
@@ -77,6 +100,7 @@ const AuthContext = createContext<AuthContextType>({
   user: undefined,
   signIn: async () => ({ isOk: false }),
   signOut: () => {},
+  activation: async () => ({ isOk: false }),
 } satisfies AuthContextType);
 const useAuth = (): AuthContextType => useContext(AuthContext);
 

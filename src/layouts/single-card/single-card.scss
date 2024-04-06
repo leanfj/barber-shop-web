@@ -1,7 +1,7 @@
 @import "../../themes/generated/variables.base.scss";
 
 .single-card {
-
+  
   .dx-card {
     width: 330px;
     margin: auto auto;
@@ -33,5 +33,13 @@
         line-height: 18px;
       }
     }
+  }
+
+  .flex-column-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
   }
 }

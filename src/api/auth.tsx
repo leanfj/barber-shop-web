@@ -159,3 +159,28 @@ export async function resetPassword(
     };
   }
 }
+
+export async function activateAccount(
+  usuarioId: string,
+  token: string,
+): Promise<{ isOk: boolean; message?: string; data?: any }> {
+  try {
+    // Send request
+    const user = await AxiosClient.getInstance().get(
+      `/usuarios/${usuarioId}/activate/${token}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    return {
+      isOk: true,
+      data: user.data,
+    };
+  } catch {
+    return {
+      isOk: false,
+      message: "Failed to activate account",
+    };
+  }
+}
