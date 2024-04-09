@@ -10,7 +10,6 @@ import { AuthProvider, useAuth } from "./contexts/auth";
 import { useScreenSizeClass } from "./utils/media-query";
 import Content from "./Content";
 import UnauthenticatedContent from "./UnauthenticatedContent";
-import { CookiesProvider } from "react-cookie";
 
 function App(): JSX.Element {
   const { user, loading } = useAuth();
@@ -30,16 +29,14 @@ export default function Root(): JSX.Element {
   const screenSizeClass = useScreenSizeClass();
 
   return (
-    <CookiesProvider defaultSetOptions={{ path: "/" }}>
-      <Router>
-        <AuthProvider>
-          <NavigationProvider>
-            <div className={`app ${screenSizeClass}`}>
-              <App />
-            </div>
-          </NavigationProvider>
-        </AuthProvider>
-      </Router>
-    </CookiesProvider>
+    <Router>
+      <AuthProvider>
+        <NavigationProvider>
+          <div className={`app ${screenSizeClass}`}>
+            <App />
+          </div>
+        </NavigationProvider>
+      </AuthProvider>
+    </Router>
   );
 }
