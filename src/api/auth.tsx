@@ -71,7 +71,7 @@ export async function signIn(
 
 export async function signOut(email: string): Promise<{ isOk: boolean }> {
   try {
-    const token = JSON.parse(localStorage.getItem("token") ?? "");
+    // const token = JSON.parse(localStorage.getItem("token") ?? "");
 
     await AxiosClient.getInstance().post(
       "/authentication/logout",
@@ -80,9 +80,6 @@ export async function signOut(email: string): Promise<{ isOk: boolean }> {
       },
       {
         withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 
@@ -145,9 +142,6 @@ export async function getUser(): Promise<{
     const user = await AxiosClient.getInstance().get(
       `/usuarios/id/${usuarioId}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         withCredentials: true,
       },
     );
