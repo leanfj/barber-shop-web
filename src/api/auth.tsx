@@ -51,6 +51,11 @@ export async function signIn(
       JSON.stringify(data.data.token.props.usuarioId),
     );
 
+    localStorage.setItem(
+      "token",
+      JSON.stringify(data.data.token.props.token.props.value),
+    );
+
     return {
       isOk: true,
       data: data.data,
@@ -66,6 +71,8 @@ export async function signIn(
 
 export async function signOut(email: string): Promise<{ isOk: boolean }> {
   try {
+    const token = JSON.parse(localStorage.getItem("token") ?? "");
+
     await AxiosClient.getInstance().post(
       "/authentication/logout",
       {
@@ -73,8 +80,15 @@ export async function signOut(email: string): Promise<{ isOk: boolean }> {
       },
       {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
+
+    localStorage.setItem("usuarioId", JSON.stringify(""));
+
+    localStorage.setItem("token", JSON.stringify(""));
 
     return {
       isOk: true,
@@ -105,11 +119,35 @@ export async function getUser(): Promise<{
   };
 }> {
   try {
+    const token = JSON.parse(localStorage.getItem("token") ?? "");
     const usuarioId = JSON.parse(localStorage.getItem("usuarioId") ?? "");
+
+    if (!token || !usuarioId) {
+      return {
+        isOk: false,
+        data: {
+          _id: {
+            value: "",
+          },
+          props: {
+            nome: "",
+            tenantId: "",
+            email: "",
+            password: "",
+            isActive: false,
+            dataAtualizacao: "",
+            dataCadastro: "",
+          },
+        },
+      };
+    }
+
     const user = await AxiosClient.getInstance().get(
       `/usuarios/id/${usuarioId}`,
       {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 

@@ -26,7 +26,7 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
 
       setLoading(false);
     })();
-  }, []);
+  }, [setUser]);
 
   const signIn = useCallback(
     async (
@@ -38,16 +38,14 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
       message?: string | undefined;
     }> => {
       const result = await sendSignInRequest(email, password);
-      const user = await getUser();
-
       if (result.isOk && result.data?.token.props.usuarioId) {
+        const user = await getUser();
         if (!user.isOk) {
           return {
             isOk: false,
             message: "Failed to get user data",
           };
         }
-
         setUser(user.data);
       } else {
         return {
