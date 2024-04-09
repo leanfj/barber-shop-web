@@ -1,37 +1,40 @@
 import React, { /* useCallback, */ useEffect } from "react";
-import { /* useNavigate, */ useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadIndicator from "devextreme-react/load-indicator";
 import { useAuth } from "../../contexts/auth";
-// import notify from "devextreme/ui/notify";
+import notify from "devextreme/ui/notify";
 
 export default function ActivationAccount(): JSX.Element {
   const { activation } = useAuth();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const usuarioId = searchParams.get("usuarioId");
+    const fetchData = async (): Promise<any> => {
+      try {
+        const token = searchParams.get("token");
+        const usuarioId = searchParams.get("usuarioId");
+        if (!token || !usuarioId) {
+          return;
+        }
+        const result = await activation(usuarioId, token);
 
-    console.log(token, usuarioId);
+        return result;
+      } catch (error) {
+        return {
+          isOk: false,
+          message: "Fail to Activation",
+        };
+      }
+    };
 
-    if (!token || !usuarioId) {
-      return;
-    }
-
-    activation(usuarioId, token)
-      .then((result) => {
-        console.log(result);
+    fetchData()
+      .then(() => {
+        navigate("/login");
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        notify("Fail to Activation", "error", 2000);
       });
-
-    // if (result.isOk) {
-    //   // navigate("/login");
-    // } else {
-    //   notify("Fail to Activation", "error", 2000);
-    // }
   }, []);
 
   return <LoadIndicator width={"24px"} height={"24px"} visible={true} />;

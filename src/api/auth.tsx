@@ -1,5 +1,3 @@
-// import defaultUser from "../utils/default-user";
-// import { AxiosError } from "axios";
 import { AxiosClient } from "./axiosClient";
 
 export async function signIn(
@@ -66,9 +64,32 @@ export async function signIn(
   }
 }
 
+export async function signOut(email: string): Promise<{ isOk: boolean }> {
+  try {
+    await AxiosClient.getInstance().post(
+      "/authentication/logout",
+      {
+        email,
+      },
+      {
+        withCredentials: true,
+      },
+    );
+
+    return {
+      isOk: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      isOk: false,
+    };
+  }
+}
+
 export async function getUser(): Promise<{
   isOk: boolean;
-  data?: {
+  data: {
     _id: {
       value: string;
     };
@@ -97,21 +118,47 @@ export async function getUser(): Promise<{
       data: user.data,
     };
   } catch (error) {
-    console.log(error);
     return {
       isOk: false,
+      data: {
+        _id: {
+          value: "",
+        },
+        props: {
+          nome: "",
+          tenantId: "",
+          email: "",
+          password: "",
+          isActive: false,
+          dataAtualizacao: "",
+          dataCadastro: "",
+        },
+      },
     };
   }
 }
 
 export async function createAccount(
+  name: string,
   email: string,
   password: string,
 ): Promise<{ isOk: boolean; message?: string }> {
   try {
-    // Send request
-    console.log(email, password);
-
+    const data = await AxiosClient.getInstance().post(
+      "/usuarios",
+      {
+        nome: name,
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      },
+    );
+    console.log(data);
     return {
       isOk: true,
     };
