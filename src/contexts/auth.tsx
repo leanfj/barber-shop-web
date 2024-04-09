@@ -12,7 +12,6 @@ import {
   signOut as sendSignOutRequest,
 } from "../api/auth";
 import type { User, AuthContextType } from "../types";
-// import { Cookies } from "react-cookie";
 
 function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
   const [user, setUser] = useState<User>();
@@ -72,8 +71,6 @@ function AuthProvider(props: React.PropsWithChildren<unknown>): JSX.Element {
     if (!user) {
       return;
     }
-
-    // new Cookies().remove("token");
 
     await sendSignOutRequest(user.data.props.email);
 
