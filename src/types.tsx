@@ -42,6 +42,7 @@ export interface AuthContextType {
   ) => Promise<{ isOk: boolean; data?: User; message?: string }>;
   signOut: () => void;
   loading: boolean;
+  activation: (usuarioId: string, token: string) => Promise<{ isOk: boolean }>;
 }
 
 export interface SideNavToolbarProps {

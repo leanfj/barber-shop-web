@@ -14,7 +14,7 @@ export default function SingleCard({
       width={"100%"}
       className={"with-footer single-card"}
     >
-      <div className={"dx-card content"}>
+      <div className={"dx-card content flex-column-center"}>
         <div className={"header"}>
           <div className={"title"}>{title}</div>
           <div className={"description"}>{description}</div>

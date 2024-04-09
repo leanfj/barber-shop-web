@@ -18,15 +18,15 @@ import "./CreateAccountForm.scss";
 export default function CreateAccountForm(): JSX.Element {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const formData = useRef({ email: "", password: "" });
+  const formData = useRef({ name: "", email: "", password: "" });
 
   const onSubmit = useCallback(
     async (e: any) => {
       e.preventDefault();
-      const { email, password } = formData.current;
+      const { name, email, password } = formData.current;
       setLoading(true);
 
-      const result = await createAccount(email, password);
+      const result = await createAccount(name, email, password);
       setLoading(false);
 
       if (result.isOk) {
@@ -46,6 +46,14 @@ export default function CreateAccountForm(): JSX.Element {
   return (
     <form className={"create-account-form"} onSubmit={onSubmit}>
       <Form formData={formData.current} disabled={loading}>
+        <Item
+          dataField={"name"}
+          editorType={"dxTextBox"}
+          editorOptions={nameEditorOptions}
+        >
+          <RequiredRule message="Name is required" />
+          <Label visible={false} />
+        </Item>
         <Item
           dataField={"email"}
           editorType={"dxTextBox"}
@@ -106,6 +114,11 @@ export default function CreateAccountForm(): JSX.Element {
     </form>
   );
 }
+
+const nameEditorOptions = {
+  stylingMode: "filled",
+  placeholder: "Name",
+};
 
 const emailEditorOptions = {
   stylingMode: "filled",
