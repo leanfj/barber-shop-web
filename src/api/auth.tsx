@@ -148,6 +148,7 @@ export async function getUser(): Promise<{
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       },
     );
 
