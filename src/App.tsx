@@ -27,7 +27,6 @@ function App(): JSX.Element {
 
 export default function Root(): JSX.Element {
   const screenSizeClass = useScreenSizeClass();
-
   return (
     <Router>
       <AuthProvider>

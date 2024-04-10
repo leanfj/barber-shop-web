@@ -41,7 +41,7 @@ export default function UnauthenticatedContent(): JSX.Element {
         }
       />
       <Route
-        path="/change-password/:recoveryCode"
+        path="/change-password"
         element={
           <SingleCard title="Change Password">
             <ChangePasswordForm />

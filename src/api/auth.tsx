@@ -204,17 +204,33 @@ export async function createAccount(
 }
 
 export async function changePassword(
-  email: string,
-  recoveryCode?: string,
+  password: string,
+  resetPasswordToken: string,
+  usuarioId: string,
 ): Promise<{ isOk: boolean; message?: string }> {
   try {
     // Send request
-    console.log(email, recoveryCode);
+    console.log({ password, resetPasswordToken, usuarioId });
+
+    const result = await AxiosClient.getInstance().patch(
+      `/authentication/changePassword?usuarioId=${usuarioId}&resetPasswordToken=${resetPasswordToken}`,
+      {
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    console.log(result);
 
     return {
       isOk: true,
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
       isOk: false,
       message: "Failed to change password",
@@ -226,8 +242,19 @@ export async function resetPassword(
   email: string,
 ): Promise<{ isOk: boolean; message?: string }> {
   try {
-    // Send request
-    console.log(email);
+    const result = await AxiosClient.getInstance().post(
+      "/authentication/resetPassword",
+      {
+        email,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      },
+    );
+    console.log(result);
 
     return {
       isOk: true,

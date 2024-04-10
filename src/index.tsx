@@ -8,6 +8,11 @@ import reportWebVitals from "./reportWebVitals";
 import config from "devextreme/core/config";
 import { devextremeLicense } from "./devextreme-license";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import ptBR from "devextreme/localization/messages/pt.json";
+
+import { locale, loadMessages } from "devextreme/localization";
+loadMessages(ptBR);
+locale("pt");
 config({ licenseKey: devextremeLicense });
 
 const root = ReactDOM.createRoot(

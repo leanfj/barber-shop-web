@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Form, {
   Item,
   Label,
@@ -17,15 +17,21 @@ export default function ChangePasswordForm(): JSX.Element {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const formData = useRef({ password: "" });
-  const { recoveryCode } = useParams();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
 
   const onSubmit = useCallback(
     async (e: any): Promise<any> => {
       e.preventDefault();
       const { password } = formData.current;
       setLoading(true);
-
-      const result = await changePassword(password, recoveryCode);
+      const resetPasswordToken = searchParams.get("token");
+      const usuarioId = searchParams.get("usuarioId");
+      const result = await changePassword(
+        password,
+        resetPasswordToken ?? "",
+        usuarioId ?? "",
+      );
       setLoading(false);
 
       if (result.isOk) {
@@ -34,7 +40,7 @@ export default function ChangePasswordForm(): JSX.Element {
         notify(result.message, "error", 2000);
       }
     },
-    [navigate, recoveryCode],
+    [navigate, params.recoveryCode],
   );
 
   const confirmPassword = useCallback(
