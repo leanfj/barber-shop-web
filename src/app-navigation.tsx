@@ -18,4 +18,9 @@ export const navigation = [
       },
     ],
   },
+  {
+    text: "Clientes",
+    path: "/clientes",
+    icon: "card",
+  },
 ];

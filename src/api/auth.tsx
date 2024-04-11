@@ -50,12 +50,6 @@ export async function signIn(
       "usuarioId",
       JSON.stringify(data.data.token.props.usuarioId),
     );
-
-    localStorage.setItem(
-      "token",
-      JSON.stringify(data.data.token.props.token.props.value),
-    );
-
     return {
       isOk: true,
       data: data.data,
@@ -116,10 +110,9 @@ export async function getUser(): Promise<{
   };
 }> {
   try {
-    const token = JSON.parse(localStorage.getItem("token") ?? "");
     const usuarioId = JSON.parse(localStorage.getItem("usuarioId") ?? "");
 
-    if (!token || !usuarioId) {
+    if (!usuarioId) {
       return {
         isOk: false,
         data: {
@@ -139,16 +132,20 @@ export async function getUser(): Promise<{
       };
     }
 
-    const user = await AxiosClient.getInstance().get(
-      `/usuarios/id/${usuarioId}`,
+    const user = await fetch(
+      `${process.env.REACT_APP_API_URL}/usuarios/id/${usuarioId}`,
       {
-        withCredentials: true,
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       },
-    );
+    ).then(async (response) => await response.json());
 
     return {
       isOk: true,
-      data: user.data,
+      data: user,
     };
   } catch (error) {
     return {
