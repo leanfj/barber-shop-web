@@ -11,7 +11,6 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import ptBR from "devextreme/localization/messages/pt.json";
 
 import { locale, loadMessages } from "devextreme/localization";
-import { CookiesProvider } from "react-cookie";
 loadMessages(ptBR);
 locale("pt");
 config({ licenseKey: devextremeLicense });
@@ -21,12 +20,10 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 root?.render(
-  <CookiesProvider defaultSetOptions={{ path: "/" }}>
-    <React.StrictMode>
-      <SpeedInsights />
-      <App />
-    </React.StrictMode>
-  </CookiesProvider>,
+  <React.StrictMode>
+    <SpeedInsights />
+    <App />
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function
