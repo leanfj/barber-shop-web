@@ -5,8 +5,23 @@ import DataGrid, {
   Pager,
   Paging,
   FilterRow,
-  Lookup,
+  ColumnFixing,
+  ColumnChooser,
+  SearchPanel,
+  GroupPanel,
+  Editing,
+  Export,
+  Scrolling,
+  type DataGridTypes,
 } from "devextreme-react/data-grid";
+import CustomStore from "devextreme/data/custom_store";
+import { get } from "../../api/clientes";
+
+import { Workbook } from "exceljs";
+import saveAs from "file-saver";
+import { exportDataGrid } from "devextreme/excel_exporter";
+import { exportDataGrid as exportDataGridToPdf } from "devextreme/pdf_exporter";
+import { jsPDF } from "jspdf";
 
 export default function Clientes(): JSX.Element {
   return (
@@ -16,68 +31,76 @@ export default function Clientes(): JSX.Element {
         <div className={"dx-card responsive-paddings"}>
           <DataGrid
             className={"dx-card wide-card"}
-            dataSource={dataSource as any}
-            showBorders={false}
-            focusedRowEnabled={true}
+            dataSource={customDataStore as any}
+            showBorders={true}
             defaultFocusedRowIndex={0}
             columnAutoWidth={true}
-            columnHidingEnabled={true}
+            columnHidingEnabled={false}
+            allowColumnReordering={true}
+            onExporting={exportGrid}
+            remoteOperations={true}
+            height={600}
           >
             <Paging defaultPageSize={10} />
-            <Pager showPageSizeSelector={true} showInfo={true} />
+            <Scrolling mode="virtual" rowRenderingMode="virtual" />
+            <Pager
+              showPageSizeSelector={true}
+              showInfo={true}
+              allowedPageSizes={allowedPageSizes}
+              visible={true}
+            />
+            {/* <Pager
+          visible={true}
+          displayMode={displayMode}
+          showPageSizeSelector={showPageSizeSelector}
+          showInfo={showInfo}
+          showNavigationButtons={showNavButtons} /> */}
             <FilterRow visible={true} />
-
-            <Column dataField={"Task_ID"} width={90} hidingPriority={2} />
+            <SearchPanel visible={true} />
+            <ColumnFixing enabled={true} />
+            <ColumnChooser enabled={true} mode="select" />
+            <GroupPanel visible={true} />
+            <Editing
+              mode="popup"
+              allowUpdating={true}
+              allowDeleting={true}
+              allowAdding={true}
+            />
+            <Export enabled={true} formats={exportFormats} />
+            <Column dataField={"id"} width={90} visible={false} />
             <Column
-              dataField={"Task_Subject"}
+              dataField={"tenantId"}
               width={190}
-              caption={"Subject"}
-              hidingPriority={8}
+              caption={"Tenant ID"}
+              visible={false}
             />
+            <Column dataField={"nome"} caption={"Nome"} fixed={true} />
+            <Column dataField={"cpf"} caption={"CPF"} />
             <Column
-              dataField={"Task_Status"}
-              caption={"Status"}
-              hidingPriority={6}
-            />
-            <Column
-              dataField={"Task_Priority"}
-              caption={"Priority"}
-              hidingPriority={5}
-            >
-              <Lookup
-                dataSource={priorities}
-                valueExpr={"value"}
-                displayExpr={"name"}
-              />
-            </Column>
-            <Column
-              dataField={"ResponsibleEmployee.Employee_Full_Name"}
-              caption={"Assigned To"}
+              dataField={"email"}
+              caption={"E-mail"}
               allowSorting={false}
-              hidingPriority={7}
             />
+            <Column dataField={"telefone"} caption={"Telefone"} />
+            <Column dataField={"endereco"} caption={"Endereço"} />
+            <Column dataField={"cidade"} caption={"Cidade"} />
+            <Column dataField={"estado"} caption={"Estado"} />
+            <Column dataField={"genero"} caption={"CEP"} />
+            <Column dataField={"cep"} caption={"Genero"} />
             <Column
-              dataField={"Task_Start_Date"}
-              caption={"Start Date"}
+              dataField={"dataNascimento"}
+              caption={"Data de Nascimento"}
               dataType={"date"}
-              hidingPriority={3}
             />
             <Column
-              dataField={"Task_Due_Date"}
-              caption={"Due Date"}
+              dataField={"dataCadastro"}
+              caption={"Data de Cadastro"}
               dataType={"date"}
-              hidingPriority={4}
-            />
+            />{" "}
             <Column
-              dataField={"Task_Priority"}
-              caption={"Priority"}
-              name={"Priority"}
-              hidingPriority={1}
-            />
-            <Column
-              dataField={"Task_Completion"}
-              caption={"Completion"}
-              hidingPriority={0}
+              dataField={"dataAtualizacao"}
+              caption={"Data de Atualização"}
+              dataType={"date"}
             />
           </DataGrid>
         </div>
@@ -86,29 +109,115 @@ export default function Clientes(): JSX.Element {
   );
 }
 
-const dataSource = {
-  store: {
-    version: 2,
-    type: "odata",
-    key: "Task_ID",
-    url: "https://js.devexpress.com/Demos/DevAV/odata/Tasks",
-  },
-  expand: "ResponsibleEmployee",
-  select: [
-    "Task_ID",
-    "Task_Subject",
-    "Task_Start_Date",
-    "Task_Due_Date",
-    "Task_Status",
-    "Task_Priority",
-    "Task_Completion",
-    "ResponsibleEmployee/Employee_Full_Name",
-  ],
-};
+// const dataSource = {
+//   store: {
+//     version: 2,
+//     type: "odata",
+//     key: "Task_ID",
+//     url: "https://js.devexpress.com/Demos/DevAV/odata/Tasks",
+//   },
+//   expand: "ResponsibleEmployee",
+//   select: [
+//     "Task_ID",
+//     "Task_Subject",
+//     "Task_Start_Date",
+//     "Task_Due_Date",
+//     "Task_Status",
+//     "Task_Priority",
+//     "Task_Completion",
+//     "ResponsibleEmployee/Employee_Full_Name",
+//   ],
+// };
 
-const priorities = [
-  { name: "High", value: 4 },
-  { name: "Urgent", value: 3 },
-  { name: "Normal", value: 2 },
-  { name: "Low", value: 1 },
+// const priorities = [
+//   { name: "High", value: 4 },
+//   { name: "Urgent", value: 3 },
+//   { name: "Normal", value: 2 },
+//   { name: "Low", value: 1 },
+// ];
+
+const customDataStore = new CustomStore({
+  key: "id",
+  load: async (loadOptions: any): Promise<any> => {
+    let params = "?";
+
+    [
+      "filter",
+      "group",
+      "groupSummary",
+      "parentIds",
+      "requireGroupCount",
+      "requireTotalCount",
+      "searchExpr",
+      "searchOperation",
+      "searchValue",
+      "select",
+      "sort",
+      "skip",
+      "take",
+      "totalSummary",
+      "userData",
+    ].forEach(function (i) {
+      if (i in loadOptions && isNotEmpty(loadOptions[i])) {
+        params += `${i}=${JSON.stringify(loadOptions[i])}&`;
+      }
+    });
+    params = params.slice(0, -1);
+
+    const clientes = await get(params);
+
+    if (!clientes.isOk) {
+      throw new Error(clientes.data as string);
+    }
+    return clientes;
+  },
+  errorHandler: (error: any): void => {
+    console.log(error.message);
+  },
+});
+
+const isNotEmpty = (value: any): boolean =>
+  value !== undefined && value !== null && value !== "";
+
+// function handleErrors(response: any): any {
+//   if (!response.ok) {
+//     throw Error((response.statusText as string) ?? "");
+//   }
+//   return response;
+// }
+
+const exportFormats = ["xlsx"];
+const allowedPageSizes: Array<DataGridTypes.PagerPageSize | number> = [
+  5,
+  10,
+  20,
+  50,
+  "all",
 ];
+
+async function exportGrid(e: any): Promise<void> {
+  if (e.format === "xlsx") {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet("Main sheet");
+    await exportDataGrid({
+      worksheet,
+      component: e.component,
+    }).then(async function () {
+      await workbook.xlsx.writeBuffer().then(function (buffer): void {
+        saveAs(
+          new Blob([buffer], { type: "application/octet-stream" }),
+          `${new Date().getTime()}_Clientes.xlsx`,
+        );
+      });
+    });
+  } else if (e.format === "pdf") {
+    // eslint-disable-next-line new-cap
+    const doc = new jsPDF();
+    await exportDataGridToPdf({
+      jsPDFDocument: doc,
+      component: e.component,
+    }).then(() => {
+      doc.save(`${new Date().getTime()}_Clientes.pdf`);
+    });
+  }
+}

@@ -132,20 +132,16 @@ export async function getUser(): Promise<{
       };
     }
 
-    const user = await fetch(
-      `${process.env.REACT_APP_API_URL}/usuarios/id/${usuarioId}`,
+    const user = await AxiosClient.getInstance().get(
+      `/usuarios/id/${usuarioId}`,
       {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+        withCredentials: true,
       },
-    ).then(async (response) => await response.json());
+    );
 
     return {
       isOk: true,
-      data: user,
+      data: user.data,
     };
   } catch (error) {
     return {
