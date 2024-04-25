@@ -12,8 +12,11 @@ import DataGrid, {
   Editing,
   Export,
   Scrolling,
+  Form,
+  Popup,
   type DataGridTypes,
 } from "devextreme-react/data-grid";
+import { Item } from "devextreme-react/form";
 import CustomStore from "devextreme/data/custom_store";
 import { get } from "../../api/clientes";
 
@@ -40,6 +43,8 @@ export default function Clientes(): JSX.Element {
             onExporting={exportGrid}
             remoteOperations={true}
             height={600}
+            columnResizingMode="nextColumn"
+            allowColumnResizing={true}
           >
             <Paging defaultPageSize={10} />
             <Scrolling mode="virtual" rowRenderingMode="virtual" />
@@ -49,12 +54,6 @@ export default function Clientes(): JSX.Element {
               allowedPageSizes={allowedPageSizes}
               visible={true}
             />
-            {/* <Pager
-          visible={true}
-          displayMode={displayMode}
-          showPageSizeSelector={showPageSizeSelector}
-          showInfo={showInfo}
-          showNavigationButtons={showNavButtons} /> */}
             <FilterRow visible={true} />
             <SearchPanel visible={true} />
             <ColumnFixing enabled={true} />
@@ -65,8 +64,47 @@ export default function Clientes(): JSX.Element {
               allowUpdating={true}
               allowDeleting={true}
               allowAdding={true}
-            />
+              confirmDelete={true}
+            >
+              <Popup
+                title="Editar Cliente"
+                visible={true}
+                showTitle={true}
+                width={700}
+                height={525}
+              />
+              <Form>
+                <Item itemType="group" colCount={2} colSpan={2}>
+                  <Item dataField="nome" />
+                  <Item dataField="cpf" />
+                  <Item
+                    dataField="email"
+                    validationRules={[
+                      {
+                        type: "email",
+                        message: "E-mail inválido",
+                      },
+                    ]}
+                  />
+                  <Item dataField="telefone" />
+                  <Item dataField="genero" />
+                  <Item dataField="dataNascimento" />
+                </Item>
+                <Item
+                  itemType="group"
+                  caption="Localização"
+                  colCount={2}
+                  colSpan={2}
+                >
+                  <Item dataField="endereco" />
+                  <Item dataField="cidade" />
+                  <Item dataField="estado" />
+                  <Item dataField="cep" />
+                </Item>
+              </Form>
+            </Editing>
             <Export enabled={true} formats={exportFormats} />
+
             <Column dataField={"id"} width={90} visible={false} />
             <Column
               dataField={"tenantId"}
@@ -96,11 +134,13 @@ export default function Clientes(): JSX.Element {
               dataField={"dataCadastro"}
               caption={"Data de Cadastro"}
               dataType={"date"}
-            />{" "}
+              visible={false}
+            />
             <Column
               dataField={"dataAtualizacao"}
               caption={"Data de Atualização"}
               dataType={"date"}
+              visible={false}
             />
           </DataGrid>
         </div>
